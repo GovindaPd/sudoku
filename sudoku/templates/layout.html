@@ -99,28 +99,32 @@
     };
 
     function onlyNumberKey(event) {
-        // Only ASCII character in that range allowed
-        let ASCIICode = event.target.value//(event.which!=undefined) ? event.which : event.keyCode;
+        let ASCIICode = event.target.value
         let indx = event.target.id;
         let row = parseInt(indx[0])
         let col = parseInt(indx[1])
-        if ("123456789".includes(ASCIICode)){
-            let num = parseInt(ASCIICode)
-            if(check_number_can_be_fill(sdk,row,col,num)){
-                sdk[row][col] = num;
-                // check does sudoku has been completed
-                if (check_sudoku_completed(sdk)){
-                    document.getElementById(indx).value = num;
-                    document.getElementById('msg_box').innerHTML= "Congratulation You Solved The Sudoku!!!"
-                    document.getElementById('sdk_table').style.border = "3px solid blue"
-                    for(let i=0; i<9; i++){
-                        for(let j=0; j<9; j++){
-                            document.getElementById(String(i)+String(j)).readOnly = true;
+        if (ASCIICode!=''){
+            if ("123456789".includes(ASCIICode)){
+                let num = parseInt(ASCIICode)
+                if(check_number_can_be_fill(sdk,row,col,num)){
+                    sdk[row][col] = num;
+                    // check does sudoku has been completed
+                    if (check_sudoku_completed(sdk)){
+                        document.getElementById(indx).value = num;
+                        document.getElementById('msg_box').innerHTML= "Congratulation You Solved The Sudoku!!!"
+                        document.getElementById('sdk_table').style.border = "3px solid blue"
+                        for(let i=0; i<9; i++){
+                            for(let j=0; j<9; j++){ document.getElementById(String(i)+String(j)).readOnly = true;}
                         }
+                        return true;
                     }
                     return true;
                 }
-                return true;
+                else{
+                    sdk[row][col] = 0;
+                    document.getElementById(indx).value = '';
+                    return false
+                }
             }
             else{
                 sdk[row][col] = 0;
@@ -128,26 +132,22 @@
                 return false
             }
         }
-        else{
-            sdk[row][col] = 0;
-            document.getElementById(indx).value = '';
-            return false
-        }
+        sdk[row][col] = 0;
     };
 
     function solution(){
         $.getJSON('/solution', {
         sdk_box: JSON.stringify(sdk)
         }, function(data){
-            if (typeof(data) == 'object'){
+            if (data['msg'] == 'worked'){
                 for(i=0;i<9;i++){
                     for(j=0;j<9;j++){
-                        $("#"+String(i)+String(j)).val(data[i][j])
+                        $("#"+String(i)+String(j)).val(data['sdk'][i][j])
                     }
                 }  
             }
             else{
-                console.log(data)
+                document.getElementById('msg_box').innerHTML = data['msg']
             }       
         });
     };
