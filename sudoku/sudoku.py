@@ -45,7 +45,7 @@ def solution():
     try:
         sdk = json.loads(request.args.get('sdk_box'))
         if (fill_sudoku(sdk,0,0)):
-            return sdk_box = json.dumps({"sdk":sdk, "msg":"worked"})
+            return json.dumps({"sdk":sdk, "msg":"worked"})
         else:
             return json.dumps({"msg":"Numbers are filled in wrong orders >:"})
     except:
