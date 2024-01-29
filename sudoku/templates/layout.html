@@ -58,8 +58,7 @@
 </html>
 
 <script type="text/javascript">
-    const M = 9;
-    const myconverter = {'97':'1','98':'2','99':'3','100':'4','101':'5','102':'6','103':'7','104':'8','105':'9'};
+    //const myconverter = {'97':'1','98':'2','99':'3','100':'4','101':'5','102':'6','103':'7','104':'8','105':'9'};
     let sdk = {{ sdk_board }};
 
     function check_sudoku_completed(sdk, num){
@@ -101,43 +100,39 @@
 
     function onlyNumberKey(event) {
         // Only ASCII character in that range allowed
-        let ASCIICode = (event.which) ? event.which : event.keyCode
+        let ASCIICode = event.target.value//(event.which!=undefined) ? event.which : event.keyCode;
         let indx = event.target.id;
         let row = parseInt(indx[0])
         let col = parseInt(indx[1])
-        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)){
-            if (ASCIICode > 96 && ASCIICode < 106 ){
-                if(Object.keys(myconverter).includes(ASCIICode.toString())){
-                    let num = parseInt(myconverter[ASCIICode]) 
-                    if(check_number_can_be_fill(sdk,row,col,num)){
-                        sdk[row][col] = num;
-                        // check does sudoku has been completed
-                        if (check_sudoku_completed(sdk)){
-                            document.getElementById(indx).value = num;
-                            document.getElementById('msg_box').innerHTML= "Congratulation You Solved The Sudoku!!!"
-                            document.getElementById('sdk_table').style.border = "3px solid blue"
-                            for(let i=0; i<9; i++){
-                                for(let j=0; j<9; j++){
-                                    document.getElementById(String(i)+String(j)).readOnly = true;
-                                }
-                            }
+        if ("123456789".includes(ASCIICode)){
+            let num = parseInt(ASCIICode)
+            if(check_number_can_be_fill(sdk,row,col,num)){
+                sdk[row][col] = num;
+                // check does sudoku has been completed
+                if (check_sudoku_completed(sdk)){
+                    document.getElementById(indx).value = num;
+                    document.getElementById('msg_box').innerHTML= "Congratulation You Solved The Sudoku!!!"
+                    document.getElementById('sdk_table').style.border = "3px solid blue"
+                    for(let i=0; i<9; i++){
+                        for(let j=0; j<9; j++){
+                            document.getElementById(String(i)+String(j)).readOnly = true;
                         }
-                        return true;
-                    } 
-                    return false;
+                    }
+                    return true;
                 }
-                // console.log("not include")
+                return true;
+            }
+            else{
+                sdk[row][col] = 0;
+                document.getElementById(indx).value = '';
                 return false
             }
-            return false;
         }
-
-        let num = parseInt(String.fromCharCode(ASCIICode)) 
-        if(check_number_can_be_fill(sdk,row,col,num)){
-            sdk[row][col] = num;
-            return true;
+        else{
+            sdk[row][col] = 0;
+            document.getElementById(indx).value = '';
+            return false
         }
-        return false;
     };
 
     function solution(){
