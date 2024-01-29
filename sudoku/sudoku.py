@@ -42,15 +42,14 @@ def your_sudoku():
 
 @app.route('/solution', methods=['GET','POST'])
 def solution():
-    error_msg = "Solution Does Not Exist >:"
     try:
         sdk = json.loads(request.args.get('sdk_box'))
         if (fill_sudoku(sdk,0,0)):
-            sdk_board = json.dumps(sdk)
-            return sdk_board
-        return error_msg
+            return sdk_box = json.dumps({"sdk":sdk, "msg":"worked"})
+        else:
+            return json.dumps({"msg":"Numbers are filled in wrong orders >:"})
     except:
-        return "Please send a valid Sudoku Puzle."
+        return json.dumps({"msg": "Please send a valid Sudoku Puzle."})
     
 @app.route('/about')
 def about():
