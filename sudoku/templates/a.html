@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+{% block body %}	
+<!-- 		<div class="cal-desc row" style="margin-top:20px;">
+		  <div class="col-sm-4"></div>
+		  <div class="col-sm-4" style="border: 0px solid black;">
+		    <div class="text-center">
+		    	{% if context['instruction'] %}
+			    	<p style="font-size: 18px; font-weight: bold;">
+			    	  {{context['instruction']|safe}}
+			    	</p>
+			    {% endif %}
+		    </div>		
+		  </div>
+		  <div class="col-sm-4"></div>
+		</div> -->
+
+		<div class="cal-form row" style="margin-top:50px; margin-bottom:50px;" >
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6  shadow resp-border" style="border-radius: 10px; ">
+				
+				<form name="sudoku_form" class="form-group" action="" method="post">
+					{% if context['msg'] %}
+					<h5 style="color: whitesmoke; text-align:center;">{{context['msg']}} </h5><br>
+					{% endif %}
+					<div class="row d-flex justify-content-center">
+					{% if sdk_board %}
+						{% for row in range(0,9,1) %}
+						{% set r = loop.index0 %}
+						{% if loop.index0%3==0 %}						
+						<div class="form-inline row " style="height: 27px; padding-top: 0; background-color: white;">
+						{% elif loop.index0==8 %}
+						<div class="form-inline row" style="height: 27px; padding-top: 0; background-color: white;">
+						{% else %}
+						<div class="form-inline row" style="height: 27px; padding-top: 0; background-color: white;">
+						{% endif %}
+							
+							{% for col in range(0,9,1) %}
+							<div class="form-group" style=" border: 0px solid red; ">
+								{% if loop.index0%3 == 0 and loop.index0 != 0 %}
+									{% if r%3 == 0 and r != 0 %}
+								<div class="col-xs-1" style="border-left: 3px solid black; border-top: 3px solid black;">
+									{% else %}
+								<div class="col-xs-1" style="border-left: 3px solid black; border-top: 0.5px solid black;">
+									{% endif %}
+								{% else %}
+									{% if r%3 == 0 and r != 0 %}
+								<div class="col-xs-1" style="border-left: 0.5px solid black; border-top: 3px solid black;">
+									{% else %}
+								<div class="col-xs-1" style="border-left: 0.5px solid black; border-top: 0.5px solid black;">
+									{% endif %}
+					    		{% endif %}
+
+				    			{% if sdk_board[row][col] !=0 %}
+									<input type="text" id="{{ row|string + col|string }}" maxlength="1"  value="{{ sdk_board[row][col] }}" size="1" readonly style="width: 100%; background-color: black!important; color: white!important; outline: none;">
+								{% else %}
+									<input type="text" id="{{row|string + col|string}}" maxlength="1"  value="" size="1" onclick="this.select()" style="width: 11%;"   onkeydown="return onlyNumberKey(event)">
+								{% endif %}
+					    			<!-- onkeypress="return onlyNumberKey(event)" -->
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+						{% endfor %}
+					{% else %}
+						{{ context[msg] }}
+					{% endif %}
+					</div><br>
+					</div>
+					<div class="row container">
+						<div class="col-sm-4">
+							<input type="button" name="submit" class="btn btn-grad btn-block" value="SOLUTION" id="cal-age" onclick="solution()">
+						</div>
+						<div class="col-sm-4">
+							<a href="{{url_for('home')}}" class="btn btn-grad btn-block">RESTART</a>
+						</div>	
+						<div class="col-sm-4">
+							<a href="{{url_for('your_sudoku')}}" class="btn btn-grad btn-block">YOUR SUDOKU</a>	
+						</div>
+					</div>
+				
+				</form>
+			</div>
+			<div class="col-sm-3"></div><br>
+		</div>
+
+		<div class="container-fluied" style="overflow-x: hidden; margin-top: 0px; margin-bottom:50px;">
+			<div class="row" style="" >
+				<div class="col-sm-3"></div>
+				<div class="col-sm-6 justify-content-center shadow" style="border-radius: 10px;">
+					<div style="padding-left: 10px; padding-right: 10px; text-align: center;">						
+					<!-- <img src="/static/img/Age Calculator.jpg" alt="YourAgeCalculator.com" style="width:100%; padding-top:10px; padding-bottom: 10px;"> -->
+					{% if context['instruction'] %}
+				    	<p style="font-size: 18px; font-weight: bold; text-align:center;">
+				    	  {{context['instruction']|safe}}
+				    	</p>
+				    {% endif %}					
+					</div>
+				<div class="col-sm-3"></div>
+				</div>
+			</div>
+		</div>
+
+{% endblock %}

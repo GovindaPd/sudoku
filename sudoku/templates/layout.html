@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ context['title']|default('Sudoku Puzle Solver') }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/img/sdk_icon.png" sizes="16x16" type="image/png">
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    
+    <style type="text/css">
+        input[type=text] {
+            box-sizing: border-box;
+            border: 0px solid black;
+            margin: 0 !important;
+            text-align: center;
+    </style>
+</head>
+<body>
+    <div class="container-fluied header-body">
+        <div class="header-space shadow">
+            <h3 class="titletext text-center">
+              <a href="/" alt="Sudoku Puzle Solver" style="text-decoration: none;">
+                {{ context['websitename'] }}</a>
+            </h3>
+        </div>
+    </div>
+
+    <div class="container-fluied main-body">
+        {% block body %}
+        {% endblock %}
+    </div>
+    <div class="footer-info container-fluied" style="">  
+        <div class="row" style="">
+          <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/about" style="">About Us</a></p>
+         </div>
+         <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/contactus" style="">Contact Us</a></p>
+         </div>
+          <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/privacy-policy" style="">Privacy Ploicy</a></p>
+          </div>
+          <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/disclaimer" style="">Disclaimer</a></p>
+          </div>
+          <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/terms-and-conditions" style="">Terms And Conditions</a></p>
+          </div>  
+          <div class="col-sm-2 d-flex justify-content-center">
+            <p><a href="/" style="">&copy {{ context['currentyear'] }} {{ context['websitename'] }}</a></p>
+          </div>   
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    const M = 9;
+    const myconverter = {'97':'1','98':'2','99':'3','100':'4','101':'5','102':'6','103':'7','104':'8','105':'9'};
+    let sdk = {{ sdk_board }};
+
+    function check_sudoku_completed(sdk, num){
+        for(let i=0; i<9; i++){
+            for(let j=0; j<9; j++){
+                if(sdk[i][j]==0){
+                    return false
+                }
+            }
+           
+        }
+        return true
+    }
+
+    function check_number_can_be_fill(sdk,row=0,col=0,num){
+        for(x=0;x<9;x++){
+            if (sdk[row][x]==num){
+                return false;
+            }
+        }
+        for(x=0;x<9;x++){
+            if (sdk[x][col]==num){
+                return false;
+            }
+        }
+
+        let startrow = row - row%3
+        let startcol = col - col%3
+
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
+                if (sdk[startrow+i][startcol+j] == num){
+                    return false
+                }
+            }
+        }
+    return true;
+    };
+
+    function onlyNumberKey(event) {
+        // Only ASCII character in that range allowed
+        let ASCIICode = (event.which) ? event.which : event.keyCode
+        let indx = event.target.id;
+        let row = parseInt(indx[0])
+        let col = parseInt(indx[1])
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)){
+            if (ASCIICode > 96 && ASCIICode < 106 ){
+                if(Object.keys(myconverter).includes(ASCIICode.toString())){
+                    let num = parseInt(myconverter[ASCIICode]) 
+                    if(check_number_can_be_fill(sdk,row,col,num)){
+                        sdk[row][col] = num;
+                        // check does sudoku has been completed
+                        if (check_sudoku_completed(sdk)){
+                            document.getElementById(indx).value = num;
+                            document.getElementById('msg_box').innerHTML= "Congratulation You Solved The Sudoku!!!"
+                            document.getElementById('sdk_table').style.border = "3px solid blue"
+                            for(let i=0; i<9; i++){
+                                for(let j=0; j<9; j++){
+                                    document.getElementById(String(i)+String(j)).readOnly = true;
+                                }
+                            }
+                        }
+                        return true;
+                    } 
+                    return false;
+                }
+                // console.log("not include")
+                return false
+            }
+            return false;
+        }
+
+        let num = parseInt(String.fromCharCode(ASCIICode)) 
+        if(check_number_can_be_fill(sdk,row,col,num)){
+            sdk[row][col] = num;
+            return true;
+        }
+        return false;
+    };
+
+    function solution(){
+        $.getJSON('/solution', {
+        sdk_box: JSON.stringify(sdk)
+        }, function(data){
+            if (typeof(data) == 'object'){
+                for(i=0;i<9;i++){
+                    for(j=0;j<9;j++){
+                        $("#"+String(i)+String(j)).val(data[i][j])
+                    }
+                }  
+            }
+            else{
+                console.log(data)
+            }       
+        });
+    };
+</script>

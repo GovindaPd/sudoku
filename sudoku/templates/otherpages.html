@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block body %}
+		<div class="container-fluied" style="overflow-x: hidden; margin-top: 50px; margin-bottom:50px;">	
+		<div class="">
+			<div class="row" >
+				<div class="col-sm-3"></div>
+				<div class="col-sm-6 d-flex justify-content-center shadow" style="  border: 0px solid white;color :white; border-radius: 10px;">
+					<div style="padding-left: 10px; padding-right: 10px;">
+					{% if context['content'] %}
+						{{context['content']|safe}}
+					{% else %}
+						{{ "there is no content."}}
+					{% endif %}
+				</div>		
+				</div>
+				<div class="col-sm-3"></div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

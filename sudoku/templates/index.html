@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+{% block body %}	
+<!-- 		<div class="cal-desc row" style="margin-top:20px;">
+		  <div class="col-sm-4"></div>
+		  <div class="col-sm-4" style="border: 0px solid black;">
+		    <div class="text-center">
+		    	{% if context['instruction'] %}
+			    	<p style="font-size: 18px; font-weight: bold;">
+			    	  {{context['instruction']|safe}}
+			    	</p>
+			    {% endif %}
+		    </div>		
+		  </div>
+		  <div class="col-sm-4"></div>
+		</div> -->
+
+		<div class="container-fluied row" style="margin-top:50px; margin-bottom:50px;" >
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6  shadow resp-border" style="border-radius: 10px; ">
+				{% if context['msg'] %}
+				<h5 id="msg_box" style="color: whitesmoke; text-align:center;">{{context['msg']}} </h5><br>
+				{% endif %}
+
+				<div class="row justify-content-center">
+					{% if sdk_board %}	
+					<table id="sdk_table" style="border:3px solid black">
+						{% for row in range(0,9,1) %}
+						{% set r = loop.index0 %}
+						
+						<tr>
+						{% for col in range(0,9,1) %}
+							{% if r%3 == 0 and r != 0 and loop.index0%3==0 and loop.index0 != 0 %}
+							<td style="border-top: 3px solid black; border-left: 3px solid black; ">
+							{% elif r%3 == 0 and r != 0 %}
+							<td style="border-top: 3px solid black; ">
+							{% elif loop.index0%3==0 and loop.index0 != 0 %}
+							<td style="border-left: 3px solid black; ">
+							{% else %}
+							<td style="">
+							{% endif %}
+							{% if sdk_board[row][col] !=0 %}
+							<input type="text" id="{{ row|string + col|string }}" maxlength="1"  value="{{ sdk_board[row][col] }}" size="1" readonly style="width: 30px; height: 30px; background-color: black!important; color: white!important; outline: none;">
+							{% else %}
+							<input type="text" id="{{row|string + col|string}}" maxlength="1"  value="" size="1" onclick="this.select()" style="width: 30px; height: 30px;"   onkeydown="return onlyNumberKey(event)">
+							{% endif %}
+							</td>
+						{% endfor %}
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+				</div>
+
+				<div class="row container mt-5">
+					<div class="col-md-4">
+						<input type="button" name="submit" class="btn btn-grad btn-block" value="SOLUTION" id="cal-age" onclick="solution()">
+					</div>
+					<div class="col-md-4">
+						<a href="{{url_for('home')}}" class="btn btn-grad btn-block">NEW GAME</a>
+					</div>	
+					<div class="col-md-4">
+						<a href="{{url_for('your_sudoku')}}" class="btn btn-grad btn-block">YOUR SUDOKU</a>	
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-sm-3"></div><br>
+		</div>
+
+		<div class="container-fluied" style="overflow-x: hidden; margin-top: 0px; margin-bottom:50px;">
+			<div class="row" style="" >
+				<div class="col-sm-3"></div>
+				<div class="col-sm-6 justify-content-center shadow" style="border-radius: 10px;">
+					<div style="padding-left: 10px; padding-right: 10px; text-align: center;">						
+					
+					{% if context['instruction'] %}
+			    	  {{context['instruction']|safe}}			    	
+				    {% endif %}
+				    <h4>How To Play Sudoku?</h4>
+				    <p style="text-align:center;">Sudoku is collection of 9 rows and 9 columns and this 9*9 matrix is divided in 9 matrix of 3*3 matrix.Ecach row,column and 3*3 matrix needs to be filled out with numbers from 1 to 9, without repeating any numbers within row, column and in 3*3 matrix.
+				    </p>
+				    <h4>For better understandin look at bellow image</h4>
+				    <img src="/static/img/sdk_info.png" alt="Sudoku Way to solve" style="width:100%; padding-top:10px; padding-bottom: 10px;">
+					</div>
+				</div>
+				<div class="col-sm-3"></div>
+			</div>
+		</div>
+
+{% endblock %}
