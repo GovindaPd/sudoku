@@ -41,7 +41,7 @@
 							{% if sdk_board[row][col] !=0 %}
 							<input type="text" id="{{ row|string + col|string }}" maxlength="1"  value="{{ sdk_board[row][col] }}" size="1" readonly style="width: 30px; height: 30px; background-color: black!important; color: white!important; outline: none;">
 							{% else %}
-							<input type="text" id="{{row|string + col|string}}" maxlength="1"  value="" size="1" onclick="this.select()" style="width: 30px; height: 30px;"   onkeydown="return onlyNumberKey(event)">
+							<input type="text" id="{{row|string + col|string}}" maxlength="1"  value="" size="1" onclick="this.select()" style="width: 30px; height: 30px;"   oninput="onlyNumberKey(event)">
 							{% endif %}
 							</td>
 						{% endfor %}
